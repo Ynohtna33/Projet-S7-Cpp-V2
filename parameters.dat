@@ -14,6 +14,6 @@ Smax 300.0
 # Nombre de points en espace
 Ns 200
 # Nombre de pas de temps
-Nt 1000
+Nt 40000
 # Schéma temporel: euler_explicit, euler_implicit, rk2, rk3, rk4
-time_scheme euler_implicit
+time_scheme rk2

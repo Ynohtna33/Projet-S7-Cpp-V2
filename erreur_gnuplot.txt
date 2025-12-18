@@ -1,0 +1,30 @@
+set terminal pngcairo size 1024,768 enhanced font 'Verdana,10'
+set output 'convergence_graph.png'
+
+# Configuration de base
+set logscale xy
+set grid xtics ytics
+set xlabel "Pas de temps (dtau)"
+set ylabel "Erreur L2"
+set title "Analyse de convergence temporelle (EDO : dy/dt = -y)"
+set key left top
+
+# Définition du modèle de régression linéaire : log(y) = pente * log(x) + constante
+f(x, a, b) = a * x + b
+
+# --- EULER ---
+fit f(x, a1, b1) 'err_euler.txt' using (log($2)):(log($3)) via a1, b1
+# --- RK2 ---
+fit f(x, a2, b2) 'err_rk2.txt'   using (log($2)):(log($3)) via a2, b2
+# --- RK3 ---
+fit f(x, a3, b3) 'err_rk3.txt'   using (log($2)):(log($3)) via a3, b3
+# --- RK4 ---
+fit f(x, a4, b4) 'err_rk4.txt'   using (log($2)):(log($3)) via a4, b4
+
+# Tracé final avec les pentes dans la légende
+plot 'err_euler.txt' u 2:3 w lp pt 7 t sprintf('Euler (pente: %.2f)', a1), \
+     'err_rk2.txt'   u 2:3 w lp pt 7 t sprintf('RK2 (pente: %.2f)', a2), \
+     'err_rk3.txt'   u 2:3 w lp pt 7 t sprintf('RK3 (pente: %.2f)', a3), \
+     'err_rk4.txt'   u 2:3 w lp pt 7 t sprintf('RK4 (pente: %.2f)', a4)
+
+set output

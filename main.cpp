@@ -1,5 +1,60 @@
 #include <iostream>
 #include <fstream>
+#include <vector>
+#include <string>
+#include <cmath>
+#include <iomanip>
+#include <Eigen/Dense>
+#include "OdeSystem.h"
+#include "TimeScheme.h"
+
+using namespace std;
+using namespace Eigen;
+
+// Système simple : dy/dt = -y => Sol : y(t) = exp(-t)
+class SimpleDecayODE : public ODESystem {
+public:
+    VectorXd evaluate(const VectorXd& V, double tau) override { return -1.0 * V; }
+    int size() const override { return 1; }
+};
+
+void generate_data(const string& scheme_id, const string& filename) {
+    ofstream file(filename);
+    if (!file) return;
+
+    double T_final = 1.0;
+    double y_exact = exp(-T_final);
+    VectorXd dummy_grid(1); dummy_grid << 0.0;
+
+    // On varie Nt de 16 à 4096 (puissances de 2)
+    for (int Nt = 16; Nt <= 4096; Nt *= 2) {
+        double dtau = T_final / Nt;
+        SimpleDecayODE system;
+        auto scheme = createTimeScheme(scheme_id, 0.0, 0.0, dummy_grid);
+        
+        VectorXd V(1); V(0) = 1.0; 
+
+        for (int n = 0; n < Nt; ++n) {
+            V = scheme->step(&system, V, n * dtau, dtau);
+        }
+
+        double error = abs(V(0) - y_exact);
+        file << Nt << " " << dtau << " " << error << endl;
+    }
+    file.close();
+    cout << "Fichier " << filename << " cree avec succes." << endl;
+}
+
+int main() {
+    generate_data("euler_explicit", "err_euler.txt");
+    generate_data("rk2", "err_rk2.txt");
+    generate_data("rk3", "err_rk3.txt");
+    generate_data("rk4", "err_rk4.txt");
+    return 0;
+}
+/*
+#include <iostream>
+#include <fstream>
 #include <iomanip>
 #include <cmath>
 #include <Eigen/Dense>
@@ -192,3 +247,4 @@ int main() {
     
     return 0;
 }
+*/

@@ -1,0 +1,5 @@
+pour faire des changements :
+
+git add .
+git commit -m "message clair"
+git push

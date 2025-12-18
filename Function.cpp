@@ -137,7 +137,8 @@ Parameters readParameters(const string& filename) {
 double computeL2Error(const VectorXd& numerical, const VectorXd& exact) {
     // Calcule la norme L2 de la différence
     VectorXd diff = numerical - exact;
-    return diff.norm() / sqrt(diff.size());
+    return diff.norm() / exact.norm();
+    //return diff.norm() / sqrt(diff.size());
 }
 
 // Fonction pour calculer l'erreur maximale (norme infinie)
