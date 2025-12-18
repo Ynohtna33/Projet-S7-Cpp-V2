@@ -1,0 +1,19 @@
+# Paramètres pour Black-Scholes
+# Prix spot initial
+S0 100.0
+# Prix d'exercice (strike)
+K 100.0
+# Taux sans risque (5% annuel)
+r 0.05
+# Volatilité (20% annuel)
+sigma 0.20
+# Maturité en années
+T 1.0
+# Prix maximum du domaine
+Smax 300.0
+# Nombre de points en espace
+Ns 200
+# Nombre de pas de temps
+Nt 1000
+# Schéma temporel: euler_explicit, euler_implicit, rk2, rk3, rk4
+time_scheme euler_implicit
